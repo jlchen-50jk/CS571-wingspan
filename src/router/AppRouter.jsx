@@ -6,12 +6,14 @@ import GoalEntryPage from '../pages/GoalEntryPage';
 import RoundSummaryPage from '../pages/RoundSummaryPage';
 import FinalScoringPage from '../pages/FinalScoringPage';
 import ResultsPage from '../pages/ResultsPage';
+import GameSettingPage from '../pages/GameSettingPage';
 
 function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/game-settings" element={<GameSettingPage />} />
         <Route path="/lobby" element={<LobbyPage />} />
         <Route path="/round/:roundNumber" element={<RoundPage />} />
         <Route path="/goal-entry/:roundNumber" element={<GoalEntryPage />} />

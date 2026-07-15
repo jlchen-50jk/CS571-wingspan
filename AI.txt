@@ -1,0 +1,2 @@
+Current Esitmate AI-generated code: 90%
+7/13: Use AI to plan project structure and scaffold project. 
