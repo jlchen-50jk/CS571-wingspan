@@ -1,46 +1,48 @@
 :root {
-  /* Wingspan-inspired palette */
-  --wp-bg: #f5edd8;
-  --wp-surface: #fffdf5;
+  /* Backgrounds */
 
-  --wp-green: #3d6b4f;
-  --wp-green-light: #57866a;
+  --wp-bg: #e9f1f4;
+  --wp-surface: #fdfcf8;
+  --wp-surface-alt: #f6f7f4;
 
-  --wp-brown: #7b4f2e;
-  --wp-brown-light: #9a6b47;
+  /* Primary Wingspan Blues */
 
-  --wp-text: #1c1a14;
-  --wp-border: #d8ccb0;
+  --wp-primary: #7cb4e6;
+  --wp-primary-dark: #5f9ad6;
+  --wp-primary-light: #cfe8f6;
+
+  /* Accent Colors */
+
+  --wp-sage: #a8b99b;
+  --wp-brown: #8d7559;
+  --wp-slate: #708090;
+
+  /* Text */
+
+  --wp-text: #2f3c45;
+  --wp-text-muted: #66727a;
+  --wp-heading: #ffffff;
+
+  /* Borders */
+
+  --wp-border: #d8e3ea;
 
   /* Player Colors */
-  --player-teal: #2e8b8b;
-  --player-purple: #7a5fa2;
-  --player-yellow: #d8be4d;
-  --player-red: #c45b57;
-  --player-blue: #5f88c5;
-  --player-green: #5d9a65;
-  --player-pink: #d48aa5;
 
-  /* Typography */
-  --heading-font: "Georgia", serif;
-  --body-font: "Arial", sans-serif;
+  --player-teal: #4fa9ad;
+  --player-purple: #8a71be;
+  --player-yellow: #dcc65e;
+  --player-red: #d06963;
+  --player-blue: #679dd8;
+  --player-green: #76af76;
+  --player-pink: #d99ab8;
 
-  /* Shadows */
-  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
+  /* Fonts */
 
-body {
-  background-color: var(--wp-bg);
-  color: var(--wp-text);
-  font-family: var(--body-font);
-}
+  --heading-font: "Trebuchet MS", sans-serif;
+  --body-font: "Segoe UI", sans-serif;
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: var(--heading-font);
-  color: var(--wp-green);
+  /* Effects */
+
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
