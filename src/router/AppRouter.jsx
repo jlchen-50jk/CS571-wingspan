@@ -7,6 +7,7 @@ import RoundSummaryPage from '../pages/RoundSummaryPage';
 import FinalScoringPage from '../pages/FinalScoringPage';
 import ResultsPage from '../pages/ResultsPage';
 import GameSettingPage from '../pages/GameSettingPage';
+import AvailableGamesPage from '../pages/AvailableGamesPage';
 
 function AppRouter() {
   return (
@@ -17,6 +18,7 @@ function AppRouter() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/game-settings" element={<GameSettingPage />} />
+        <Route path="/available-games" element={<AvailableGamesPage />} />
         <Route path="/lobby" element={<LobbyPage />} />
         <Route path="/round/:roundNumber" element={<RoundPage />} />
         <Route path="/goal-entry/:roundNumber" element={<GoalEntryPage />} />

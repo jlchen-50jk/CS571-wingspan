@@ -13,7 +13,7 @@ function LandingPage() {
                 <Button className="btn wingspan-btn py-4" onClick={() => navigate("/game-settings")}>
                     Create Game
                 </Button>
-                <Button className="btn wingspan-btn py-4" onClick={() => navigate("/lobby")}>
+                <Button className="btn wingspan-btn py-4" onClick={() => navigate("/available-games")}>
                     Join Game
                 </Button>
             </div>
