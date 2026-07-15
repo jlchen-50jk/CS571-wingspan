@@ -1,1 +1,131 @@
-/* TODO: Add global application styles. */
+/* Main Layout */
+
+.app-container {
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+/* Cards */
+
+.wingspan-card {
+  background-color: var(--wp-surface);
+  border: 1px solid var(--wp-border);
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  padding: 1.5rem;
+}
+
+/* Buttons */
+
+
+.btn.wingspan-btn {
+  background-color: var(--wp-surface);
+  border-color: var(--wp-green);
+  color: var(--wp-green);
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease-in-out;
+}
+
+.btn.wingspan-btn:hover {
+  background-color: var(--wp-green);
+  border-color: var(--wp-green);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+}
+
+.btn.wingspan-btn:focus,
+.btn.wingspan-btn:active {
+  background-color: var(--wp-green);
+  border-color: var(--wp-green);
+  color: white;
+}
+
+
+/* Landing Page Button Group */
+
+
+.landing-actions .btn {
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+/* Progress Tracker */
+
+.progress-tracker {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.progress-step {
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.progress-step.active {
+  color: var(--wp-green);
+  font-weight: bold;
+}
+
+.progress-step.completed {
+  color: var(--wp-brown);
+}
+
+/* Player Color Indicators */
+
+.player-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 0.5rem;
+}
+
+.player-blue {
+  background-color: var(--player-blue);
+}
+
+.player-red {
+  background-color: var(--player-red);
+}
+
+.player-green {
+  background-color: var(--player-green);
+}
+
+.player-purple {
+  background-color: var(--player-purple);
+}
+
+.player-yellow {
+  background-color: var(--player-yellow);
+}
+
+.player-teal {
+  background-color: var(--player-teal);
+}
+
+.player-pink {
+  background-color: var(--player-pink);
+}
+
+/* Utility Classes */
+
+.center-screen {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.page-title {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.section-spacing {
+  margin-bottom: 2rem;
+}

@@ -1,2 +1,6 @@
 Current Esitmate AI-generated code: 90%
-7/13: Use AI to plan project structure and scaffold project. 
+7/13: 
+- Use AI to plan project structure and scaffold project. 
+7:14:
+- Use AI to extract custom styling matching wingspan games
+- Update app.css and theme.css

@@ -10,7 +10,10 @@ import GameSettingPage from '../pages/GameSettingPage';
 
 function AppRouter() {
   return (
-    <BrowserRouter>
+    <BrowserRouter future={{
+        v7_startTransition: true,
+        v7_relativeSplatPath: true,
+    }}>
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/game-settings" element={<GameSettingPage />} />

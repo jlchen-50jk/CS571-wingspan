@@ -1,1 +1,46 @@
-/* TODO: Define theme variables and shared colors. */
+:root {
+  /* Wingspan-inspired palette */
+  --wp-bg: #f5edd8;
+  --wp-surface: #fffdf5;
+
+  --wp-green: #3d6b4f;
+  --wp-green-light: #57866a;
+
+  --wp-brown: #7b4f2e;
+  --wp-brown-light: #9a6b47;
+
+  --wp-text: #1c1a14;
+  --wp-border: #d8ccb0;
+
+  /* Player Colors */
+  --player-teal: #2e8b8b;
+  --player-purple: #7a5fa2;
+  --player-yellow: #d8be4d;
+  --player-red: #c45b57;
+  --player-blue: #5f88c5;
+  --player-green: #5d9a65;
+  --player-pink: #d48aa5;
+
+  /* Typography */
+  --heading-font: "Georgia", serif;
+  --body-font: "Arial", sans-serif;
+
+  /* Shadows */
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+body {
+  background-color: var(--wp-bg);
+  color: var(--wp-text);
+  font-family: var(--body-font);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--heading-font);
+  color: var(--wp-green);
+}
