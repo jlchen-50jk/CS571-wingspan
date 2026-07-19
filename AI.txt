@@ -1,4 +1,5 @@
-Current Esitmate AI-generated code: 90%
+Current Esitmate AI-generated code: 80% 
+My Role is to prompt AI to generate code for desired layout/design of website
 7/13: 
 - Use AI to plan project structure and scaffold project. 
 7:14:
