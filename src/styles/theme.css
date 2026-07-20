@@ -17,6 +17,13 @@
   --wp-brown: #8d7559;
   --wp-slate: #708090;
 
+  /* Gradients */
+  
+  --wp-gradient-start: #eef5f8;
+  --wp-gradient-middle: #cfe8f6;
+  --wp-gradient-end: #eff5f6;
+
+
   /* Text */
 
   --wp-text: #2f3c45;
