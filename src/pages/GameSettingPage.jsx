@@ -108,6 +108,9 @@ function GameSettingPage() {
     <Button className="btn wingspan-btn py-3" onClick={() => navigate("/lobby")}>
       Start Game
     </Button>
+    <Button className="btn wingspan-btn py-3 mt-2" variant="secondary" onClick={() => navigate("/")}>
+      Back to Home
+    </Button>
     <GoalSelectionModal
       show={showGoalModal}
       onHide={() => setShowGoalModal(false)}
