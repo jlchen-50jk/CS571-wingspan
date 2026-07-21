@@ -302,3 +302,15 @@ h1 {
   width: 100%;
   display: block;
 }
+
+.player-cube {
+  width: 20px;
+  height: 20px;
+
+  border-radius: 50%;
+
+  margin: 0.5rem auto 0;
+
+  border: 2px solid white;
+  box-shadow: 0 0 0 1px var(--wp-border);
+}
