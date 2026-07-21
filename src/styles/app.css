@@ -188,14 +188,11 @@ h1 {
   background-color: var(--wp-gradient-start);
 }
 
-.selection-card {
+.selection-card.card {
   cursor: pointer;
   transition: all 0.2s ease;
-  border: 2px solid transparent;
-  border-radius: 12px;
   overflow: hidden;
   height: 100%;
-  background-color: var(--wp-surface);
 }
 
 .selection-card:hover {
@@ -255,21 +252,17 @@ h1 {
    Round-End Goal Slots
 ======================================== */
 
-.goal-slot {
-  aspect-ratio: 1 / 1;
+.goal-slot.card {
 
-  display: flex;
+  display: block;
   justify-content: center;
   align-items: center;
-
-  background-color: var(--wp-surface-alt);
-  border: 2px dashed var(--wp-border);
 }
 
 .goal-placeholder.card {
   aspect-ratio: 1 / 1;
 
-  width: 120%;
+   width: auto;
 
   display: flex;
   flex-direction: column;
@@ -277,7 +270,7 @@ h1 {
   align-items: center;
 
   text-align: center;
-
+  padding: 0rem;
   border: 2px dashed var(--wp-border);
   border-radius: 8px;
 

@@ -50,6 +50,10 @@ function GameSettingPage() {
   const playerCntOptions = Array.from({ length: gameSettings.maxPlayers -2 }, (_, i) => i + 3); // Create an array [3, 4, ..., maxPlayers]
   const availableGoals = goals.filter(goal => gameSettings.expansions.includes(goal.expansion));
 
+  //TODO: add error checking for start game button: no expansion select, and not all goals select (ok to be all blanks)
+  //TODO: add a way to reset game settings to default values (3 players, base expansion, no goals selected)
+  //TODO: add a way to remove a selected goal from a round (maybe just click the goal again to deselect it)
+
   return <Container className="center-screen">
     <h1 className="page-title">Game Settings</h1>
     <Accordion defaultActiveKey={["0", "1"]} className="mb-4" flush alwaysOpen>
@@ -90,13 +94,16 @@ function GameSettingPage() {
                     selected={false} 
                     className="goal-slot" 
                     title={`Round ${round}`}
+                    image={gameSettings.goals[round] ? gameSettings.goals[round].image : ""}
                     onClick={() => {
                       setSelectedRound(round);
                       setShowGoalModal(true);
                     }}>
-                      <Card className="goal-placeholder">
-                        <small>Select Goal</small>
-                      </Card>
+                      {
+                        gameSettings.goals[round] ?<></> : <Card className="goal-placeholder">
+                          <small>Select Goal</small>
+                        </Card>
+                      }
                   </SelectionCard>
                 </Col>
               ))
@@ -105,7 +112,7 @@ function GameSettingPage() {
         </Accordion.Body>
       </Accordion.Item>
     </Accordion>
-    <Button className="btn wingspan-btn py-3" onClick={() => navigate("/lobby")}>
+    <Button className="btn wingspan-btn py-3" onClick={() => navigate("/lobby")}> 
       Start Game
     </Button>
     <Button className="btn wingspan-btn py-3 mt-2" variant="secondary" onClick={() => navigate("/")}>

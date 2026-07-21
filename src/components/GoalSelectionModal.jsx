@@ -9,7 +9,6 @@ function GoalSelectionModal({
   goals,
   onGoalSelect,
 }) {
-    console.log("Available Goals in GoalSelectionModal:", goals);
   return <AppModal
       show={show}
       onHide={onHide}
