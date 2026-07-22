@@ -14,11 +14,11 @@ export function GameProvider({ children }) {
     },
     players: [
         { //TODO: default players for testing, will be replaced with actual players when game is started
-              id: 1,
-              name: "Jack",
-              
-              cubeColor: "#d9534f",
-              scores: {
+            id: 1,
+            name: "Jack",
+            
+            cubeColor: "#d9534f",
+            scores: {
                 birdPoints: "",
                 bonusCards: "",
                 roundGoals: "",
@@ -26,7 +26,7 @@ export function GameProvider({ children }) {
                 cachedFood: "",
                 tuckedCards: "",
                 nectarPoints: ""
-          }}
+        }}
     ],
     currentRound: 0, //0 means game hasn't started yet, 1-4 are the rounds of the game
     maxPlayers: 5, // Default to 5 players, when Asia is selected, update to 7

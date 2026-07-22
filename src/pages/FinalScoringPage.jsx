@@ -1,8 +1,7 @@
 import { Container, Form, Row, Col, Button } from "react-bootstrap";
-
-import PageHeader from "../components/PageHeader";
 import { useGame } from "../context/GameContext";
 import { useNavigate } from "react-router-dom";
+import { SCORE_CATEGORIES } from "../data/scoreCategories";
 
 function FinalScorePage() {
   let navigate = useNavigate();
@@ -18,16 +17,6 @@ function FinalScorePage() {
   const currentPlayer = gameSettings.players[0]; //TODO: Remove assumption: Assuming the first player is the current player for scoring
 
   console.log("Current Player:", currentPlayer); //TODO: Remove this debug log after confirming the current player is correct
-
-  const scores = currentPlayer?.scores ?? {
-    birdPoints: "",
-    bonusCards: "",
-    roundGoals: "",
-    eggs: "",
-    cachedFood: "",
-    tuckedCards: "",
-    nectarPoints: "",
-  };
 
   const calculateScore = (value) => {
     if (!value) {
@@ -49,99 +38,40 @@ function FinalScorePage() {
 
   const updateScore = (field, value) => {
     updatePlayerScores(currentPlayer.id, {
-      ...scores,
-      value,
+      ...currentPlayer.scores,
+      [field]: value,
     });
   };
 
   const totalScore =
-    calculateScore(scores.birdPoints) +
-    calculateScore(scores.bonusCards) +
-    calculateScore(scores.roundGoals) +
-    calculateScore(scores.eggs) +
-    calculateScore(scores.cachedFood) +
-    calculateScore(scores.tuckedCards) +
-    calculateScore(scores.nectarPoints);
+    calculateScore(currentPlayer?.scores?.birdPoints) +
+    calculateScore(currentPlayer?.scores?.bonusCards) +
+    calculateScore(currentPlayer?.scores?.roundGoals) +
+    calculateScore(currentPlayer?.scores?.eggs) +
+    calculateScore(currentPlayer?.scores?.cachedFood) +
+    calculateScore(currentPlayer?.scores?.tuckedCards) +
+    calculateScore(currentPlayer?.scores?.nectarPoints);
 
   const handleSubmitScore = () => {
     navigate("/results");
   };
 
-  const scoreRows = [
-    {
-      key: "birdPoints",
-      label: "Bird Points",
-      placeholder: "3+4+5+2",
-    },
-    {
-      key: "bonusCards",
-      label: "Bonus Cards",
-      placeholder: "3+2",
-    },
-    {
-      key: "roundGoals",
-      label: "Round End Goals",
-      placeholder: "5+4+3",
-    },
-    {
-      key: "eggs",
-      label: "Eggs",
-      placeholder: "14",
-    },
-    {
-      key: "cachedFood",
-      label: "Cached Food",
-      placeholder: "7",
-    },
-    {
-      key: "tuckedCards",
-      label: "Tucked Cards",
-      placeholder: "12",
-    },
-    {
-      key: "nectarPoints",
-      label: "Nectar",
-      placeholder: "6",
-    },
-  ];
-
   return (
     <Container className="py-4">
-      <PageHeader
-        title="Final Scoring"
-        subtitle={currentPlayer?.name}
-      />
+      <h1 className="page-title text-center mb-4">Final Scoring Calculator</h1>
 
       <Form>
-        {scoreRows.map((row) => (
-          <Row
-            key={row.key}
-            className="align-items-center mb-3"
-          >
-            <Col xs={5}>
-              <strong>{row.label}</strong>
-            </Col>
-
+        {SCORE_CATEGORIES.map((scoreRow) => (
+          <Row key={scoreRow.key} className="align-items-center mb-3">
+            <Col xs={5}><strong>{scoreRow.label}</strong></Col>
             <Col xs={5}>
               <Form.Control
-                value={scores[row.key]}
-                placeholder={row.placeholder}
-                onChange={(e) =>
-                  updateScore(
-                    row.key,
-                    e.target.value
-                  )
-                }
+                value={currentPlayer?.scores?.[scoreRow.key] || ""}
+                placeholder={scoreRow.placeholder}
+                onChange={(e) => updateScore(scoreRow.key, e.target.value)}
               />
             </Col>
-
-            <Col xs={2}>
-              <strong>
-                {calculateScore(
-                  scores[row.key]
-                )}
-              </strong>
-            </Col>
+            <Col xs={2}><strong>{calculateScore(currentPlayer?.scores?.[scoreRow.key])}</strong></Col>
           </Row>
         ))}
       </Form>

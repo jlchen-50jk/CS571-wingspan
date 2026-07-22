@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Container, Button, Stack, Image } from "react-bootstrap";
 
-import PageHeader from "../components/PageHeader";
 import SelectionCard from "../components/SelectionCard";
 import PlayerInfoModal from "../components/PlayerInfoModal";
 
@@ -13,7 +12,7 @@ import { useGame } from "../context/GameContext";
 function LobbyPage() {
   const [showPlayerModal, setShowPlayerModal] = useState(false);
 
-  const { advanceRound , updateRound, addPlayer } = useGame();
+  const { gameSettings, advanceRound , updateRound, addPlayer } = useGame();
   
   const lobbyId = "ABCD";
 
@@ -94,11 +93,14 @@ function LobbyPage() {
   };
 
   const handleStartGame = () => {
-    for (const player of players) {
-      //TODO addPlayer(player);
-    }
-    advanceRound();
-    navigate("/round");
+    
+    //TODO addPlayer(player);    
+    /*TODO: add goals validation to make sure either no goals are selected
+      or all 4 goals are selected before starting the game
+      set flag if no goals for logic below to navigate to scoring page instead of round page
+    */
+    gameSettings.goals[1] ? () => {advanceRound(); navigate("/round")} : navigate("/scoring");
+    
   };
 
   //TODO: Update button leave to have secondary style color through app.css

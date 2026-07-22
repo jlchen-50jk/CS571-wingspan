@@ -113,7 +113,7 @@ function GameSettingPage() {
       </Accordion.Item>
     </Accordion>
     <Button className="btn wingspan-btn py-3" onClick={() => navigate("/lobby")}> 
-      Start Game
+      Create Game
     </Button>
     <Button className="btn wingspan-btn py-3 mt-2" variant="secondary" onClick={() => navigate("/")}>
       Back to Home

@@ -1,6 +1,5 @@
 import { Container, Button, Stack } from "react-bootstrap";
 
-import PageHeader from "../components/PageHeader";
 import { useNavigate } from "react-router-dom";
 
 function ResultsPage() {
