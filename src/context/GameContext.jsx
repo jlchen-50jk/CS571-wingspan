@@ -3,35 +3,44 @@ import { createContext, useContext, useState } from "react";
 const GameContext = createContext();
 
 export function GameProvider({ children }) {
-  const [gameSettings, setGameSettings] = useState({
+  const [gameSettings, setGameSettings] = useState({ //create function to create initial game settings object
+    id: null, // Unique identifier for the game session
     playerCount: 3,
     expansions: ["base"], // Default to base expansion
+    status: "", // "lobby", "round" + currentRound, "final scoring", "results"
     goals: {
         1: null,
         2: null,
         3: null,
         4: null,
     },
-    players: [
-        { //TODO: default players for testing, will be replaced with actual players when game is started
-            id: 1,
-            name: "Jack",
-            
-            cubeColor: "#d9534f",
-            scores: {
-                birdPoints: "",
-                bonusCards: "",
-                roundGoals: "",
-                eggs: "",
-                cachedFood: "",
-                tuckedCards: "",
-                nectarPoints: ""
-        }}
-    ],
+    players: [],
     currentRound: 0, //0 means game hasn't started yet, 1-4 are the rounds of the game
     maxPlayers: 5, // Default to 5 players, when Asia is selected, update to 7
-    
   });
+
+  function assignGameId() {
+    const gameId = Math.random().toString(36).substring(2, 6);
+    setGameSettings((prev) => ({
+      ...prev,
+      id: gameId,
+    }));
+  }
+
+  function assignPlayerId() {
+    const playerId = gameSettings.players.length + 1; // Assigns a player ID based on the current number of players
+    //TODO: need to return error if lobby is full
+    setGameSettings((prev) => ({
+      ...prev,
+      players: [
+        ...prev.players,
+        {
+          id: playerId,
+        }
+      ],
+    }));
+    return playerId;
+  }
 
   const updatePlayerCount = (count) => {
     setGameSettings((prev) => ({
@@ -51,7 +60,7 @@ export function GameProvider({ children }) {
             )
         : [...prev.expansions, expansionId],
         //if Asia is selected, toggles maxplayers between 5 and 7, otherwise keeps the previous maxPlayers value
-        maxPlayers: expansionId === "asia" ? (prev.maxPlayers === 5 ? 7 : 5) : prev.maxPlayers,
+        maxPlayers: expansionId === "asia" && prev.expansions.includes(expansionId) ? 5 : (expansionId === "asia" ? 7 : prev.maxPlayers),
     }));
   };
 
@@ -128,6 +137,8 @@ export function GameProvider({ children }) {
       value={{
         gameSettings,
 
+        assignGameId,
+        assignPlayerId,
         updatePlayerCount,
         toggleExpansion,
 

@@ -1,4 +1,3 @@
-// constants/scoreCategories.js
 
 export const SCORE_CATEGORIES = [
   {

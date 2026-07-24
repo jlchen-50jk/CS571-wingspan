@@ -12,11 +12,11 @@ import { useGame } from "../context/GameContext";
 function LobbyPage() {
   const [showPlayerModal, setShowPlayerModal] = useState(false);
 
-  const { gameSettings, advanceRound , updateRound, addPlayer } = useGame();
+  const { gameSettings, advanceRound , updateRound, addPlayer, resetGameSettings } = useGame();
   
-  const lobbyId = "ABCD";
-
-  const isHost = true;
+  const lobbyId = gameSettings.id
+  const playerId = sessionStorage.getItem("playerId"); //TODO: need to make sure game settings does not bleed into other game sessions, maybe add a unique game ID to the game settings and check that against the session storage player ID
+  const isHost = true; //TODO: Assuming the first player is the host for now
 
   let navigate = useNavigate();
 
@@ -26,61 +26,24 @@ function LobbyPage() {
       name: "Jack",
       matImage: playerMat,
       cubeColor: "#d9534f",
-      scores: {
-        birdPoints: "",
-        bonusCards: "",
-        roundGoals: "",
-        eggs: "",
-        cachedFood: "",
-        tuckedCards: "",
-        nectarPoints: ""
-  }
-
     },
     {
       id: 2,
       name: "Sarah",
       matImage: playerMat,
       cubeColor: "#0275d8",
-      scores: {
-        birdPoints: "",
-        bonusCards: "",
-        roundGoals: "",
-        eggs: "",
-        cachedFood: "",
-        tuckedCards: "",
-        nectarPoints: ""
-      }
     },
     {
       id: 3,
       name: "Kevin",
       matImage: playerMat,
       cubeColor: "#5cb85c",
-      scores: {
-        birdPoints: "",
-        bonusCards: "",
-        roundGoals: "",
-        eggs: "",
-        cachedFood: "",
-        tuckedCards: "",
-        nectarPoints: ""
-      }
     },
     {
       id: 4,
       name: "Emily",
       matImage: playerMat,
       cubeColor: "#f0ad4e",
-      scores: {
-        birdPoints: "",
-        bonusCards: "",
-        roundGoals: "",
-        eggs: "",
-        cachedFood: "",
-        tuckedCards: "",
-        nectarPoints: ""
-      }
     },
   ];
 
@@ -89,6 +52,7 @@ function LobbyPage() {
   }, []);
 
   const handleLeaveLobby = () => {
+    resetGameSettings();
     navigate("/");
   };
 

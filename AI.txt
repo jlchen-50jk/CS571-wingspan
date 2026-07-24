@@ -1,7 +1,5 @@
-Current Esitmate AI-generated code: 80% 
-My Role is to prompt AI to generate code for desired layout/design of website
-7/13: 
-- Use AI to plan project structure and scaffold project. 
-7:14:
-- Use AI to extract custom styling matching wingspan games
-- Update app.css and theme.css
+Current Esitmate AI-generated code: 70% 
+My Role is to:
+- prompt AI to generate initial implementation website by providing project design, specific react bootstrap components usage, and areas of improvements in implementation.
+- Troubleshoot and correct bugs in AI implementation
+- Improve code readability and maintanability
