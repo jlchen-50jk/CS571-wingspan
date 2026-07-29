@@ -3,3 +3,4 @@ My Role is to:
 - prompt AI to generate initial implementation website by providing project design, specific react bootstrap components usage, and areas of improvements in implementation.
 - Troubleshoot and correct bugs in AI implementation
 - Improve code readability and maintanability
+- provide source files for images and rules for game on scroing.

@@ -3,7 +3,7 @@ import { createContext, useContext, useState } from "react";
 const GameContext = createContext();
 
 export function GameProvider({ children }) {
-  const [gameSettings, setGameSettings] = useState({ //create function to create initial game settings object
+  const [gameSettings, setGameSettings] = useState({ //TODO: create function to create initial game settings object
     id: null, // Unique identifier for the game session
     playerCount: 3,
     expansions: ["base"], // Default to base expansion
