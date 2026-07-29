@@ -28,7 +28,7 @@ export function GameProvider({ children }) {
   }
 
   function assignPlayerId() {
-    const playerId = gameSettings.players.length + 1; // Assigns a player ID based on the current number of players
+    const playerId = gameSettings.players?.length + 1; // Assigns a player ID based on the current number of players
     //TODO: need to return error if lobby is full
     setGameSettings((prev) => ({
       ...prev,

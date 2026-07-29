@@ -63,7 +63,13 @@ function LobbyPage() {
       or all 4 goals are selected before starting the game
       set flag if no goals for logic below to navigate to scoring page instead of round page
     */
-    gameSettings.goals["1"] ? () => {advanceRound(); navigate("/round")} : navigate("/scoring");
+   console.log("Game Settings",gameSettings);
+    if (gameSettings.goals[1]) {
+      advanceRound(); 
+      navigate("/round");
+    } else {
+      navigate("/scoring");
+    }
     
   };
 

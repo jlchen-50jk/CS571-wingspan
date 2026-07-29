@@ -25,7 +25,7 @@ function GameSettingPage() {
   //TODO: add a way to remove a selected goal from a round (maybe just click the goal again to deselect it)
   //TODO: add random goal selection button that will randomly select a goal for each round from the available goals (based on selected expansions)
 
-console.log("Game Settings:", gameSettings); //TODO: Remove this debug log after confirming gameSettings is correct
+  console.log("Game Settings:", gameSettings); //TODO: Remove this debug log after confirming gameSettings is correct
 
   function createGame() {
     //assign a unique game ID (for now just a random 4 letter string)
