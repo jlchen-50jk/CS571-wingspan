@@ -41,4 +41,9 @@ export const SCORE_CATEGORIES = [
     label: "Nectar Played",
     type: "nectar",
   },
+  {
+    key: "hummingbirds",
+    label: "Hummingbirds track",
+    type: "hummingbirds",
+  }
 ];

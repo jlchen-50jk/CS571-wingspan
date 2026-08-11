@@ -36,13 +36,13 @@
 
   /* Player Colors */
 
-  --player-teal: #4fa9ad;
+  --player-black: #2F3136;
   --player-purple: #8a71be;
   --player-yellow: #dcc65e;
-  --player-red: #d06963;
+  --player-red: #d9534f;
   --player-blue: #679dd8;
   --player-green: #76af76;
-  --player-pink: #d99ab8;
+  --player-white: #F8F5EE;
 
   /* Fonts */
 

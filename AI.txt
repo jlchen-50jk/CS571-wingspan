@@ -1,6 +1,7 @@
 Current Esitmate AI-generated code: 70% 
 My Role is to:
-- prompt AI to generate initial implementation website by providing project design, specific react bootstrap components usage, and areas of improvements in implementation.
+- prompt AI to generate initial implementation and code snippet by providing project design and direction
+- Add and update code with snippet provided by AI with specific react bootstrap components, and functional improvements.
 - Troubleshoot and correct bugs in AI implementation
 - Improve code readability and maintanability
 - provide source files for images and rules for game on scroing.

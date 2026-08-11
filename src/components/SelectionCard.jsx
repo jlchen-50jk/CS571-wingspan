@@ -8,13 +8,14 @@ function SelectionCard({
   onClick,
   className = "",
   children,
+  disabled = false,
 }) {
   return (
     <Card
       className={`selection-card ${
         selected ? "selected" : ""
-      } ${className}`}
-      onClick={onClick}
+      } ${disabled ? "disabled" : ""} ${className}`}
+      onClick={disabled ? undefined : onClick}
     >
       <Card.Body>
         {title && (

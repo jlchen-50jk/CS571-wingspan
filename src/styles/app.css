@@ -98,12 +98,12 @@
   background-color: var(--player-yellow);
 }
 
-.player-teal {
-  background-color: var(--player-teal);
+.player-white {
+  background-color: var(--player-white);
 }
 
-.player-pink {
-  background-color: var(--player-pink);
+.player-black {
+  background-color: var(--player-black);
 }
 
 /* Utility Classes */
@@ -117,9 +117,9 @@
 
   background: linear-gradient(
     180deg,
-    --wp-gradient-start 0%,
-    --wp-gradient-middle 50%,
-    --wp-gradient-end 100%
+    var(--wp-gradient-start) 0%,
+    var(--wp-gradient-middle) 50%,
+    var(--wp-gradient-end) 100%
   );
 }
 
@@ -137,9 +137,9 @@ body {
   margin: 0;
   background: linear-gradient(
     180deg,
-    #eef5f8 0%,
-    #d8edf9 50%,
-    #eff5f6 100%
+    var(--wp-gradient-start) 0%,
+    var(--wp-gradient-middle) 50%,
+    var(--wp-gradient-end) 100%
   );
 
   color: var(--wp-text);
@@ -195,7 +195,7 @@ h1 {
   height: 100%;
 }
 
-.selection-card:hover {
+.selection-card:not(.disabled):hover {
   transform: translateY(-2px);
 
   background-color: var(--wp-primary);
@@ -213,6 +213,15 @@ h1 {
   color: white;
 
   box-shadow: 0 0 0 3px rgba(124, 180, 230, 0.25);
+}
+
+.selection-card.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.selection-card.disabled:hover {
+  transform: none;
 }
 /* ========================================
    Expansion Cards
@@ -314,3 +323,66 @@ h1 {
   border: 2px solid white;
   box-shadow: 0 0 0 1px var(--wp-border);
 }
+
+/* ==========================
+   Results Page
+   ========================== */
+
+.score-sheet-container {
+  position: relative;
+
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.score-sheet-image {
+  width: 100%;
+  display: block;
+}
+
+.score-overlay {
+  position: absolute;
+
+  transform: translateX(-50%);
+
+  min-width: 2rem;
+
+  text-align: center;
+
+  color: #52463d;
+
+  font-family: "Patrick Hand", cursive;
+  font-size: clamp(0.7rem, 4vw, 4rem);
+  font-weight: 700;
+
+  line-height: 1;
+
+  text-shadow:
+    1px 1px 2px rgba(255, 255, 255, 0.9),
+    -1px -1px 2px rgba(255, 255, 255, 0.9);
+}
+
+.player-name {
+  font-size: clamp(0.5rem, 2vw, 3rem);
+
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+.nectar-played {
+  font-size: clamp(0.7rem, 1vw, 1.5rem);
+
+  white-space: nowrap;
+}
+
+.total-score {
+  font-size: clamp(1rem, 4vw, 5rem);
+
+  font-weight: 800;
+}
+
+.score-rank {
+  margin-left: 0.25rem;
+}
+

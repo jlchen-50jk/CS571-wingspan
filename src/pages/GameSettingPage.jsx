@@ -30,7 +30,8 @@ function GameSettingPage() {
   function createGame() {
     //assign a unique game ID (for now just a random 4 letter string)
     assignGameId();
-    sessionStorage.setItem("playerId", assignPlayerId()); // Assign a player ID to the host (first player)
+    const playerId = assignPlayerId();
+    sessionStorage.setItem("playerId", playerId); // Assign a player ID to the host (first player)
     navigate("/lobby");
   }
 

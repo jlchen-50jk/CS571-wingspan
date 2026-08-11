@@ -1,9 +1,11 @@
 import { createContext, useContext, useState } from "react";
+import { SCORE_CATEGORIES } from "../data/scoreCategories";
 
 const GameContext = createContext();
 
 export function GameProvider({ children }) {
-  const [gameSettings, setGameSettings] = useState({ //TODO: create function to create initial game settings object
+
+  const NEWGAMESTATE = {
     id: null, // Unique identifier for the game session
     playerCount: 3,
     expansions: ["base"], // Default to base expansion
@@ -17,7 +19,11 @@ export function GameProvider({ children }) {
     players: [],
     currentRound: 0, //0 means game hasn't started yet, 1-4 are the rounds of the game
     maxPlayers: 5, // Default to 5 players, when Asia is selected, update to 7
-  });
+  }
+
+  const [gameSettings, setGameSettings] = useState(NEWGAMESTATE);
+
+ 
 
   function assignGameId() {
     const gameId = Math.random().toString(36).substring(2, 6);
@@ -36,6 +42,12 @@ export function GameProvider({ children }) {
         ...prev.players,
         {
           id: playerId,
+          scores: {
+            ...SCORE_CATEGORIES.reduce((acc, category) => {
+              acc[category.key] = "";
+              return acc;
+            }, {})
+          },
         }
       ],
     }));
@@ -72,52 +84,54 @@ export function GameProvider({ children }) {
             [roundNumber]: goal,
         },
     }));
-};
+  };
 
   const resetGameSettings = () => {
-    setGameSettings({
-      playerCount: 3,
-      expansions: ["base"],
-      goals: {
-        1: null,
-        2: null,
-        3: null,
-        4: null,
-      },
-    });
+    setGameSettings(NEWGAMESTATE);
   };
 
   const addPlayer = (player) => {
-  setGameSettings((prev) => ({
-    ...prev,
-    players: [
-      ...prev.players,
-      player,
-    ],
-  }));
-};
+    setGameSettings((prev) => ({
+      ...prev,
+      players: [
+        ...prev.players,
+        player,
+      ],
+    }));
+  };
 
-    const advanceRound = () => {
-        setGameSettings((prev) => ({
-            ...prev,
-            currentRound:
-            prev.currentRound < 4
-                ? prev.currentRound + 1
-                : 4,
-        }));
-    };
+  function updatePlayerInfo(playerId, playerInfo) {
+    setGameSettings((prev) => ({
+      ...prev,
+      players: prev.players.map((player) =>
+        player.id === playerId
+          ? {
+              ...player,
+              ...playerInfo,
+            }
+          : player
+      ),
+    }));
+  }
 
-    const updateRound = (roundNumber) => {
-        setGameSettings((prev) => ({
-            ...prev,
-            currentRound: roundNumber,
-        }));
-    }
+  const advanceRound = () => {
+      setGameSettings((prev) => ({
+          ...prev,
+          currentRound:
+          prev.currentRound < 4
+              ? prev.currentRound + 1
+              : 4,
+      }));
+  };
 
-    const updatePlayerScores = (
-    playerId,
-    scores
-    ) => {
+  const updateRound = (roundNumber) => {
+      setGameSettings((prev) => ({
+          ...prev,
+          currentRound: roundNumber,
+      }));
+  }
+
+  const updatePlayerScores = (playerId, scores) => {
     setGameSettings((prev) => ({
         ...prev,
 
@@ -130,7 +144,7 @@ export function GameProvider({ children }) {
             : player
         ),
     }));
-    };
+  };
 
   return (
     <GameContext.Provider
@@ -147,6 +161,7 @@ export function GameProvider({ children }) {
         resetGameSettings,
 
         addPlayer,
+        updatePlayerInfo,
         advanceRound,
         updateRound,
         updatePlayerScores,

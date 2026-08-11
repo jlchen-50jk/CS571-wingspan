@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LandingPage from '../pages/LandingPage';
 import LobbyPage from '../pages/LobbyPage';
 import RoundPage from '../pages/RoundPage';
-import FinalScoringPage from '../pages/FinalScoringPage';
+import FinalScorePage from '../pages/FinalScorePage';
 import ResultsPage from '../pages/ResultsPage';
 import GameSettingPage from '../pages/GameSettingPage';
 import AvailableGamesPage from '../pages/AvailableGamesPage';
@@ -19,7 +19,7 @@ function AppRouter() {
         <Route path="/available-games" element={<AvailableGamesPage />} />
         <Route path="/lobby" element={<LobbyPage />} />
         <Route path="/round" element={<RoundPage />} />
-        <Route path="/scoring" element={<FinalScoringPage />} />
+        <Route path="/scoring" element={<FinalScorePage />} />
         <Route path="/results" element={<ResultsPage />} />
       </Routes>
     </BrowserRouter>

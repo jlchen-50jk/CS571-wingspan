@@ -15,37 +15,52 @@ function LobbyPage() {
   const { gameSettings, advanceRound , updateRound, addPlayer, resetGameSettings } = useGame();
   
   const lobbyId = gameSettings.id
-  const playerId = sessionStorage.getItem("playerId"); //TODO: need to make sure game settings does not bleed into other game sessions, maybe add a unique game ID to the game settings and check that against the session storage player ID
-  const isHost = true; //TODO: Assuming the first player is the host for now
+  const playerId = parseInt(sessionStorage.getItem("playerId")); //TODO: need to make sure game settings does not bleed into other game sessions, maybe add a unique game ID to the game settings and check that against the session storage player ID
+  const isHost = (playerId === 1); //TODO: Assuming the first player is the host for now
 
   let navigate = useNavigate();
 
+  console.log("Game Settings", gameSettings);
+
   const players = [
-    {
-      id: 1,
-      name: "Jack",
-      matImage: playerMat,
-      cubeColor: "#d9534f",
-    },
-    {
-      id: 2,
-      name: "Sarah",
-      matImage: playerMat,
-      cubeColor: "#0275d8",
-    },
-    {
-      id: 3,
-      name: "Kevin",
-      matImage: playerMat,
-      cubeColor: "#5cb85c",
-    },
-    {
-      id: 4,
-      name: "Emily",
-      matImage: playerMat,
-      cubeColor: "#f0ad4e",
-    },
+    ...gameSettings.players,
+    ...Array.from(
+      {
+        length: gameSettings.playerCount - gameSettings.players.length,
+      },
+      (_, index) => ({
+        id: `placeholder-${index}`,
+        isPlaceholder: true,
+      })
+    ),
   ];
+  
+  // [
+  //   {
+  //     id: 1,
+  //     name: "Jack",
+  //     matImage: playerMat,
+  //     cubeColor: "#d9534f",
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Sarah",
+  //     matImage: playerMat,
+  //     cubeColor: "#0275d8",
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "Kevin",
+  //     matImage: playerMat,
+  //     cubeColor: "#5cb85c",
+  //   },
+  //   {
+  //     id: 4,
+  //     name: "Emily",
+  //     matImage: playerMat,
+  //     cubeColor: "#f0ad4e",
+  //   },
+  // ];
 
   useEffect(() => {
     updateRound(0); // Reset the round to 0 when entering the lobby
@@ -81,47 +96,25 @@ function LobbyPage() {
       <h1 className="page-title text-center mb-4">{`Lobby ID: ${lobbyId}`}</h1>
       {
         players.map((player, index) => (
-          <div
-            key={player.id}
-            className="player-seat"
-            //style={seats[index]}
-          >
-            <SelectionCard
+          <div key={player.id} className="player-seat">
+            <SelectionCard 
               title={player.name}
-              //image={player.matImage}
               className="player-seat-card"
-              onClick={() => {
-                setShowPlayerModal(true);
-              }}
+              onClick={() => {setShowPlayerModal(true);}}
+              disabled={player.id !== playerId}
             >
-              <div
-                className="player-cube"
-                style={{
-                  backgroundColor:
-                    player.cubeColor,
-                }}
-              />
+              <div className="player-cube" style={{backgroundColor: player.cubeColor}}/>
             </SelectionCard>
           </div>
       ))}
 
-      <Stack
-        direction="horizontal"
-        gap={3}
-        className="justify-content-center mt-4"
-      >
-        <Button
-          className="btn wingspan-btn py-3"
-          onClick={handleLeaveLobby}
-        >
+      <Stack direction="horizontal" gap={3} className="justify-content-center mt-4">
+        <Button className="btn wingspan-btn py-3" onClick={handleLeaveLobby}>
           Leave Lobby
         </Button>
 
         {isHost && (
-          <Button
-            className="btn wingspan-btn py-3"
-            onClick={handleStartGame}
-          >
+          <Button className="btn wingspan-btn py-3" onClick={handleStartGame}>
             Start Game
           </Button>
         )}
@@ -129,9 +122,8 @@ function LobbyPage() {
 
       <PlayerInfoModal
         show={showPlayerModal}
-        onHide={() =>
-          setShowPlayerModal(false)
-        }
+        onHide={() => setShowPlayerModal(false)}
+        playerId={playerId}
       />
     </Container>
   );
