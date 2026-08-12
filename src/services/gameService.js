@@ -173,6 +173,8 @@ export const nextRound = async (
   return updateGame(gameId, {
     current_round:
       currentRound + 1,
+
+    status: "round",
   });
 };
 
@@ -293,6 +295,14 @@ export const getAvailableGames =
       isHost: seatNumber === 1,
     }
   );
+};
+
+export const startRoundScoring = async (
+  gameId
+) => {
+  return updateGame(gameId, {
+    status: "round_scoring",
+  });
 };
 
 // ======================================================
@@ -424,7 +434,7 @@ export const subscribeToRoundGoalResults =
 
   };
 
-  
+
 
 // ======================================================
 // Scores
@@ -465,6 +475,9 @@ export const saveScores = async (
 
         tucked_cards:
           scores.tuckedCards,
+
+        hummingbirds:
+          scores.hummingbirds,
 
         nectar_forest:
           Number(

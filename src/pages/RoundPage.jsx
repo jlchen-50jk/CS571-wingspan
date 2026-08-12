@@ -5,14 +5,14 @@ import { ROUND_GOAL_SCORING } from "../data/roundGoalScoring";
 import SelectionCard from "../components/SelectionCard";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { nextRound, goToScoring, saveRoundGoalResult, loadRoundGoalResults, updateRoundGoalResult, subscribeToRoundGoalResults, unsubscribe, subscribeToGames, loadGame } from "../services/gameService";
+import { nextRound, goToScoring, saveRoundGoalResult, loadRoundGoalResults, updateRoundGoalResult, subscribeToRoundGoalResults, unsubscribe, subscribeToGames, loadGame, startRoundScoring } from "../services/gameService";
 
 function RoundPage() {
   let navigate = useNavigate();
   const gameId = sessionStorage.getItem("gameId");
   //State Variables
-  const {gameSettings, advanceRound, loadGameSettings} = useGame();
-  const [roundEnd, setRoundEnd] = useState(false);
+  const {gameSettings, advanceRound, loadGameSettings, hydrateGame} = useGame();
+  
   const [showCountModal, setShowCountModal] = useState(false);
 
   const [ waitingForPlayers, setWaitingForPlayers] = useState(false);
@@ -31,6 +31,16 @@ function RoundPage() {
   showResultModal,
   setShowResultModal
 ] = useState(false);
+
+useEffect(() => {
+
+  if (!gameId) {
+    return;
+  }
+
+  hydrateGame(gameId);
+
+}, [gameId]);
 
   const playerDbId =
     sessionStorage.getItem(
@@ -53,15 +63,16 @@ function RoundPage() {
   const handleEndRound =
     async () => {
 
-      setShowResultModal(
-        false
-      );
+      setShowResultModal(false);
+      setShowCountModal(false);
+      setWaitingForPlayers(false);
+      setRoundResult(null);
+      setGoalCount("");
 
       await nextRound(
         gameId,
         gameSettings.currentRound
       );
-
     };
 
   async function handleEndGame() {
@@ -72,6 +83,23 @@ function RoundPage() {
 
     const { error } =
       await goToScoring(
+        gameId
+      );
+
+    if (error) {
+      console.error(error);
+    }
+
+  }
+
+  async function handleStartRoundScoring() {
+
+    setShowResultModal(false);
+    setRoundResult(null);
+    setGoalCount("");
+
+    const { error } =
+      await startRoundScoring(
         gameId
       );
 
@@ -98,13 +126,40 @@ function RoundPage() {
     useEffect(() => {
 
       if (
-        !waitingForPlayers
+        gameSettings.status ===
+        "round_scoring"
       ) {
-        return;
+
+        setShowCountModal(
+          true
+        );
+
       }
 
+    }, [
+      gameSettings.status
+    ]);
+
+    useEffect(() => {
+
       async function
-      checkRoundResults() {
+        checkRoundResults() {
+
+          if (
+            gameSettings.currentRound === 0 ||
+            gameSettings.players.length === 0
+          ) {
+            return;
+          }
+
+          console.log(
+            "Checking",
+            {
+              gameId,
+              round:
+                gameSettings.currentRound,
+            }
+          );
 
         const {
           data,
@@ -112,7 +167,7 @@ function RoundPage() {
         } =
           await loadRoundGoalResults(
             gameId,
-            round
+            gameSettings.currentRound
           );
 
         if (
@@ -125,13 +180,64 @@ function RoundPage() {
           return;
         }
 
+console.log(
+  "Loading results for round",
+  round,
+  data
+);
+
         const submitted =
           data.filter(
-            (
-              result
-            ) =>
+            (result) =>
               result.submitted
           );
+
+          console.log(
+  "Submitted:",
+  submitted.length,
+  "Expected:",
+  gameSettings.players.length
+);
+
+        const mine =
+          data.find(
+            (result) =>
+              result.player_id ===
+              playerDbId
+          );
+
+          console.log(
+  "Player DB Id:",
+  playerDbId
+);
+
+console.log(
+  "Mine:",
+  mine
+);
+        
+        if (
+          mine?.resolved
+        ) {
+
+
+          console.log(
+  "Mine resolved?",
+  mine?.resolved
+);
+          setWaitingForPlayers(
+            false
+          );
+
+          setRoundResult(
+            mine
+          );
+
+          setShowResultModal(
+            true
+          );
+
+        }
 
         if (
           submitted.length ===
@@ -157,34 +263,8 @@ function RoundPage() {
             ) {
 
               await resolveRoundGoalResults();
-              await loadMyRoundResult();
-              
 
             }
-
-          }
-
-          const myResult =
-            submitted.find(
-              (result) =>
-                result.player_id ===
-                  playerDbId &&
-                result.resolved
-            );
-
-          if (myResult) {
-
-            setWaitingForPlayers(
-              false
-            );
-
-            setRoundResult(
-              myResult
-            );
-
-            setShowResultModal(
-              true
-            );
 
           }
 
@@ -192,35 +272,42 @@ function RoundPage() {
 
       }
 
+
+      console.log(
+  "Loading results",
+  {
+    gameId,
+    round
+  }
+);
       checkRoundResults();
 
       const channel =
         subscribeToRoundGoalResults(
-          checkRoundResults
+          (payload) => {
+
+            console.log(
+              "Realtime event",
+              payload
+            );
+
+            checkRoundResults();
+
+          }
         );
 
       return () =>
         unsubscribe(channel);
 
-    }, [
-      waitingForPlayers,
-      gameId,
-      round,
-    ]);
+      }, [
+        gameId,
+        gameSettings.currentRound,
+        gameSettings.players.length,
+      ]);
 
-    async function refreshGame() {
+async function refreshGame() {
 
-  const {
-    data,
-    error,
-  } = await loadGame(gameId);
-
-  if (error) {
-    console.error(error);
-    return;
-  }
-
-  loadGameSettings(data);
+  await hydrateGame(gameId);
 
 }
 
@@ -238,16 +325,55 @@ useEffect(() => {
 
 }, [gameId]);
 
+useEffect(() => {
+
+  if (
+    gameSettings.status === "round" &&
+    showResultModal
+  ) {
+
+    setShowResultModal(false);
+
+    setWaitingForPlayers(false);
+
+    setShowCountModal(false);
+
+    setRoundResult(null);
+
+    setGoalCount("");
+
+  }
+
+}, [
+  gameSettings.status,
+  showResultModal,
+]);
+
     async function handleSubmitGoalCount() {
       try {
-
-        const { error } =
+        console.log(
+  "Submitting",
+  {
+    gameId,
+    playerDbId,
+    round,
+    goalCount,
+  }
+);
+        const result =
           await saveRoundGoalResult(
             gameId,
             playerDbId,
             round,
             Number(goalCount)
           );
+
+        console.log(
+          "saveRoundGoalResult response",
+          result
+        );
+
+        const { error } = result;
 
         if (error) {
           throw error;
@@ -269,6 +395,11 @@ useEffect(() => {
 
     }
     async function resolveRoundGoalResults() {
+
+      console.log(
+        "Resolving round",
+        round
+      );
       const {
         data,
         error,
@@ -392,45 +523,6 @@ useEffect(() => {
       }
 
     }
-  async function loadMyRoundResult() {
-
-    const {
-      data,
-    } =
-      await loadRoundGoalResults(
-        gameId,
-        round
-      );
-
-    const mine =
-      data.find(
-        (
-          result
-        ) =>
-          result.player_id ===
-          playerDbId &&
-          result.resolved
-      );
-
-    if (
-      mine
-    ) {
-
-      setWaitingForPlayers(
-        false
-      );
-
-      setRoundResult(
-        mine
-      );
-
-      setShowResultModal(
-        true
-      );
-
-    }
-
-  }
   
   //TODO: Handle score tracking - game setting will have round scores added.
   return <Container className="py-4">
@@ -446,9 +538,7 @@ useEffect(() => {
     </div>
 
     <div className="text-center mb-5">
-      {
-        roundEnd ? <h4>Round {round} Scoring</h4> : <h4>Round {round} In Progress</h4>
-      }
+      <h4>Round {round} In Progress</h4>
     </div>
 
     <Stack
@@ -464,13 +554,18 @@ useEffect(() => {
       >
         Leave Game
       </Button>
-      { 
-        roundEnd ? <Button className="btn wingspan-btn py-3" onClick={round < 4 ? handleEndRound : handleEndGame}>
-          {round < 4 ? `Advance to Round ${round + 1}` : "End Game"}
-        </Button> : <Button className="btn wingspan-btn py-3" onClick={() => setShowCountModal(true)}>
-          End Round
-        </Button>
-      }
+      {playerId === 1 && (
+        (
+          <Button
+            className="btn wingspan-btn py-3"
+            onClick={
+              handleStartRoundScoring
+            }
+          >
+            End Round
+          </Button>
+        )
+      )}
     </Stack>
     <Modal
       show={showCountModal}

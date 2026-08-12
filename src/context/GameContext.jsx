@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from "react";
 import { SCORE_CATEGORIES } from "../data/scoreCategories";
 import GOALS from "../data/goals";
-import { loadGame, loadPlayers, loadScores, loadRoundGoals } from "../services/gameService";
+import { loadGame, loadPlayers, loadScores, loadRoundGoals, loadRoundGoalResults } from "../services/gameService";
 
 const GameContext = createContext();
 
@@ -206,6 +206,11 @@ export function GameProvider({ children }) {
       error: playerError,
     } = await loadPlayers(gameId);
 
+    console.log(
+      "Hydrate players",
+      players
+    );
+
     if (playerError) {
       throw playerError;
     }
@@ -214,6 +219,11 @@ export function GameProvider({ children }) {
       data: scores,
       error: scoreError,
     } = await loadScores(gameId);
+
+    console.log(
+      "Hydrate scores",
+      scores
+    );
 
     if (scoreError) {
       throw scoreError;
@@ -226,11 +236,27 @@ export function GameProvider({ children }) {
       gameId
     );
 
+    const roundGoalResults =
+      await Promise.all([
+        loadRoundGoalResults(gameId, 1),
+        loadRoundGoalResults(gameId, 2),
+        loadRoundGoalResults(gameId, 3),
+        loadRoundGoalResults(gameId, 4),
+      ]);
+
+    console.log(
+  "roundGoalResults raw",
+  roundGoalResults
+);
+
     if (roundGoalError) {
       throw roundGoalError;
     }
 
     const goalMap = {};
+    const scoreMap = {};
+    const roundGoalTotals = {};
+    const roundGoalBreakdowns = {};
 
     roundGoals.forEach((goal) => {
 
@@ -252,7 +278,34 @@ export function GameProvider({ children }) {
 
     });
 
-    const scoreMap = {};
+    roundGoalResults.forEach(
+      ({ data }) => {
+
+        data?.forEach(
+          (result) => {
+
+            const seat =
+              result.players.seat_number;
+
+            const points =
+              result.points ?? 0;
+
+            console.log("roundGoalResults", result)
+            roundGoalTotals[seat] =
+              (
+                roundGoalTotals[seat] ?? 0
+              ) + points;
+
+            roundGoalBreakdowns[seat] = [
+              ...(roundGoalBreakdowns[seat] ?? []),
+              points,
+            ];
+
+          }
+        );
+
+      }
+    );
 
     scores.forEach((score) => {
 
@@ -267,7 +320,28 @@ export function GameProvider({ children }) {
           score.bonus_cards,
 
         roundGoals:
-          score.round_goals,
+          roundGoalBreakdowns[
+            score.players
+              .seat_number
+          ]?.length
+            ? (
+                roundGoalTotals[
+                  score.players
+                    .seat_number
+                ] ?? 0
+              )
+            : (
+                score.round_goals ?? ""
+              ),
+
+        roundGoalBreakdown:
+          (
+            roundGoalBreakdowns[
+              score.players
+                .seat_number
+            ] ?? []
+          ).join("+"),
+
 
         eggs:
           score.eggs,
@@ -277,6 +351,9 @@ export function GameProvider({ children }) {
 
         tuckedCards:
           score.tucked_cards,
+
+        hummingbirds:
+          score.hummingbirds,
 
         nectar: {
           forest:
@@ -293,6 +370,16 @@ export function GameProvider({ children }) {
 
     });
 
+
+    console.log(
+      "roundGoalTotals",
+      roundGoalTotals
+    );
+
+    console.log(
+      "scoreMap",
+      scoreMap
+    );
     setGameSettings({
 
       id: game.id,
@@ -343,7 +430,32 @@ export function GameProvider({ children }) {
           scores:
             scoreMap[
               player.seat_number
-            ] ?? {},
+            ] ?? {
+              birdPoints: "",
+              bonusCards: "",
+              roundGoals:
+                roundGoalTotals[
+                  player.seat_number
+                ] ?? 0,
+
+              roundGoalBreakdown:
+                (
+                  roundGoalBreakdowns[
+                    player.seat_number
+                  ] ?? []
+                ).join("+"),
+
+              eggs: "",
+              cachedFood: "",
+              tuckedCards: "",
+              hummingbirds: "",
+
+              nectar: {
+                forest: 0,
+                grassland: 0,
+                wetland: 0,
+              },
+            },
 
         })
       ),

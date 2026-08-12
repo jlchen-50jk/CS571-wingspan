@@ -7,7 +7,6 @@ const goalImages = import.meta.glob(
   }
 );
 
-console.log("goalImages", goalImages);
 // Base Game Goals (1-16)
 // Europe Goals (17-26)
 // Oceania Goals (27-34)

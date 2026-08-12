@@ -8,20 +8,20 @@ export const SCORE_CARD_CONFIGS = {
     image: baseScoreCard,
 
     playerColumns: [
-      35, 48, 61, 74, 87
+      37, 49, 62, 75, 88
     ],
 
     scorePositions: [
-        { field: "playerName", position: 5 },
-        { field: "birdPoints", position: 16 },
-        { field: "bonusCards", position: 28 },
+        { field: "playerName", position: 10 },
+        { field: "birdPoints", position: 18 },
+        { field: "bonusCards", position: 30 },
         { field: "roundGoals", position: 40 },
 
         { field: "eggs", position: 53 },
         { field: "cachedFood", position: 64 },
         { field: "tuckedCards", position: 75 },
 
-        { field: "total", position: 95 },
+        { field: "total", position: 85 },
     ],
   },
 
@@ -29,22 +29,22 @@ export const SCORE_CARD_CONFIGS = {
     image: oceaniaScoreCard,
 
     playerColumns: [
-      35, 48, 61, 74, 87
+      37, 50, 63, 75, 89
     ],
 
     scorePositions: [
-        { field: "playerName", position: 5 },
+        { field: "playerName", position: 10 },
         { field: "birdPoints", position: 16 },
-        { field: "bonusCards", position: 28 },
-        { field: "roundGoals", position: 40 },
+        { field: "bonusCards", position: 27 },
+        { field: "roundGoals", position: 38 },
 
-        { field: "eggs", position: 53 },
-        { field: "cachedFood", position: 64 },
-        { field: "tuckedCards", position: 75 },
-        { field: "nectarPlayed", position: 68 },
-        { field: "nectar", position: 86 },
+        { field: "eggs", position: 48 },
+        { field: "cachedFood", position: 57 },
+        { field: "tuckedCards", position: 68 },
+        { field: "nectarPlayed", position: 75 },
+        { field: "nectar", position: 80 },
 
-        { field: "total", position: 95 },
+        { field: "total", position: 87 },
     ],
   },
 
@@ -52,22 +52,22 @@ export const SCORE_CARD_CONFIGS = {
     image: asiaScoreCard,
 
     playerColumns: [
-      35, 48, 61, 74, 87
+      30, 40, 50, 61, 72, 82, 92
     ],
 
     scorePositions: [
         { field: "playerName", position: 5 },
-        { field: "birdPoints", position: 16 },
-        { field: "bonusCards", position: 28 },
-        { field: "roundGoals", position: 40 },
+        { field: "birdPoints", position: 14 },
+        { field: "bonusCards", position: 25 },
+        { field: "roundGoals", position: 35 },
 
-        { field: "eggs", position: 53 },
-        { field: "cachedFood", position: 64 },
-        { field: "tuckedCards", position: 75 },
-        { field: "nectarPlayed", position: 68 },
-        { field: "nectar", position: 86 },
+        { field: "eggs", position: 47 },
+        { field: "cachedFood", position: 60 },
+        { field: "tuckedCards", position: 70 },
+        { field: "nectarPlayed", position: 77 },
+        { field: "nectar", position: 82 },
 
-        { field: "total", position: 95 },
+        { field: "total", position: 90 },
     ],
   },
 
@@ -89,7 +89,7 @@ export const SCORE_CARD_CONFIGS = {
         { field: "tuckedCards", position: 53 },
         { field: "nectarPlayed", position: 68 },
         { field: "nectar", position: 72 },
-        { field: "hummingBirdTrack", position: 80 },
+        { field: "hummingbirds", position: 80 },
 
         { field: "total", position: 92 },
     ],

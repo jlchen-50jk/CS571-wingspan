@@ -13,11 +13,28 @@ function FinalScorePage() {
     gameSession,
     updatePlayerScores,
     loadGameSettings,
+    hydrateGame,
   } = useGame();
 
   const currentPlayerId = parseInt(sessionStorage.getItem("playerId"));
   const gameId = sessionStorage.getItem("gameId");
   const playerDbId = sessionStorage.getItem("playerDbId");
+
+  useEffect(() => {
+
+    if (
+      gameSettings.players.length > 0
+    ) {
+      return;
+    }
+
+    if (!gameId) {
+      return;
+    }
+
+    hydrateGame(gameId);
+
+  }, []);
 
   async function refreshGame() {
 
@@ -45,6 +62,7 @@ function FinalScorePage() {
 
 }
   const currentPlayer = gameSettings.players.find(player => player.id === currentPlayerId);
+
   const [waitingForPlayers, setWaitingForPlayers] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
@@ -228,10 +246,38 @@ const updateNectarScore = (habitat, value) => {
     };
 
   }, [
+    waitingForPlayers,
     gameId,
     gameSettings.players.length,
     currentPlayerId,
   ]);
+
+  console.log("gameSettings", gameSettings)
+  console.log(
+    "Saving hummingbirds",
+    currentPlayer?.scores?.hummingbirds
+  );
+  
+
+  const hasRoundGoalScore =
+  !!currentPlayer?.scores
+    ?.roundGoalBreakdown;
+
+  if (
+    !currentPlayer &&
+    gameSettings.players.length === 0
+  ) {
+    return (
+      <Container className="py-4 text-center">
+        <Spinner animation="border" />
+      </Container>
+    );
+  }
+
+console.log(
+  "Current Player Scores",
+  currentPlayer?.scores
+);
 
   return (
     <Container className="py-4">
@@ -241,7 +287,66 @@ const updateNectarScore = (habitat, value) => {
         {SCORE_CATEGORIES.map((scoreRow) => (
           <Row key={scoreRow.key} className="align-items-center mb-3">
             <Col xs={5}><strong>{scoreRow.label}</strong></Col>
-            {scoreRow.type === "nectar" ? (
+            {scoreRow.key === "roundGoals" ? (
+
+              hasRoundGoalScore ? (
+
+                <>
+                  <Col xs={5}>
+                    <Form.Control
+                      readOnly
+                      disabled
+                      value={
+                        currentPlayer?.scores
+                          ?.roundGoalBreakdown ?? ""
+                      }
+                    />
+                  </Col>
+
+                  <Col xs={2}>
+                    <strong>
+                      {
+                        currentPlayer?.scores
+                          ?.roundGoals ?? 0
+                      }
+                    </strong>
+                  </Col>
+                </>
+
+              ) : (
+
+                <>
+                  <Col xs={5}>
+                    <Form.Control
+                      value={
+                        currentPlayer?.scores
+                          ?.roundGoals ?? ""
+                      }
+                      placeholder={
+                        scoreRow.placeholder
+                      }
+                      onChange={(e) =>
+                        updateScore(
+                          scoreRow.key,
+                          e.target.value
+                        )
+                      }
+                    />
+                  </Col>
+
+                  <Col xs={2}>
+                    <strong>
+                      {calculateScore(
+                        currentPlayer?.scores
+                          ?.roundGoals
+                      )}
+                    </strong>
+                  </Col>
+                </>
+
+              )
+
+            ) : scoreRow.type === "nectar" ? (
               <Col xs={5}>
                 <Row className="g-2">
                   <Col>

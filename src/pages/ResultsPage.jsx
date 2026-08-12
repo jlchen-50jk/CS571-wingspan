@@ -127,7 +127,8 @@ function ResultsPage() {
       calculateScore(scores.roundGoals) +
       calculateScore(scores.eggs) +
       calculateScore(scores.cachedFood) +
-      calculateScore(scores.tuckedCards)
+      calculateScore(scores.tuckedCards) +
+      calculateScore(scores.hummingbirds)
     );
   };
 
