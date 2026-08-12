@@ -6,6 +6,7 @@ import { useGame } from "../context/GameContext";
 import GoalSelectionModal from "../components/GoalSelectionModal";
 import GOALS from "../data/goals.js";
 import { EXPANSIONS_LIST } from "../data/expansionList.js";
+import { createGameWithHost, saveRoundGoal } from "../services/gameService";
 
 function GameSettingPage() {
 
@@ -27,12 +28,63 @@ function GameSettingPage() {
 
   console.log("Game Settings:", gameSettings); //TODO: Remove this debug log after confirming gameSettings is correct
 
-  function createGame() {
-    //assign a unique game ID (for now just a random 4 letter string)
-    assignGameId();
-    const playerId = assignPlayerId();
-    sessionStorage.setItem("playerId", playerId); // Assign a player ID to the host (first player)
-    navigate("/lobby");
+async function createGame() {
+    try {
+      const {
+        data,
+        error,
+      } = await createGameWithHost(
+        gameSettings
+      );
+
+      if (error) {
+        throw error;
+      }
+
+      const {
+        game,
+        player,
+      } = data;
+
+      await Promise.all(
+        Object.entries(
+          gameSettings.goals
+        )
+          .filter(
+            ([, goal]) => goal
+          )
+          .map(
+            ([round, goal]) =>
+              saveRoundGoal(
+                game.id,
+                Number(round),
+                goal.id
+              )
+          )
+      );
+
+      sessionStorage.setItem(
+        "gameId",
+        game.id
+      );
+
+      sessionStorage.setItem(
+        "playerId",
+        player.seat_number
+      );
+
+      sessionStorage.setItem(
+        "playerDbId",
+        player.id
+      );
+
+      navigate("/lobby");
+    } catch (err) {
+      console.error(
+        "Failed to create game",
+        err
+      );
+    }
   }
 
   function leaveGame() {

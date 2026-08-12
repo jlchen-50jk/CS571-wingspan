@@ -370,12 +370,6 @@ h1 {
   white-space: nowrap;
 }
 
-.nectar-played {
-  font-size: clamp(0.7rem, 1vw, 1.5rem);
-
-  white-space: nowrap;
-}
-
 .total-score {
   font-size: clamp(1rem, 4vw, 5rem);
 
@@ -386,3 +380,24 @@ h1 {
   margin-left: 0.25rem;
 }
 
+.nectar-played {
+  white-space: nowrap;
+  font-size: clamp(0.6rem, 3vw, 3rem);
+
+}
+
+.nectar-played-row {
+  display: flex;
+
+  justify-content: center;
+
+  gap: 0.25em;
+}
+
+.nectar-played-row > span {
+  display: inline-block;
+
+  width: 2ch;
+
+  text-align: right;
+}

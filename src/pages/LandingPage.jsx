@@ -6,7 +6,7 @@ function LandingPage() {
     let navigate = useNavigate();
 
     return <div className="center-screen">
-        
+            
             <h1 className="page-title">Wingspan Scoreboard</h1>
             
             <div className="d-grid gap-3 px-5 landing-actions">

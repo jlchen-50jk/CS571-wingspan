@@ -5,8 +5,9 @@ import AppModal from "./AppModal";
 import SelectionCard from "./SelectionCard";
 
 import { useGame } from "../context/GameContext";
+import { updatePlayer } from "../services/gameService";
 
-function PlayerInfoModal({show, onHide, playerId}) {
+function PlayerInfoModal({show, onHide, playerId, players}) {
   const { updatePlayerInfo, assignPlayerId } = useGame();
   const [playerName, setPlayerName] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
@@ -21,15 +22,47 @@ function PlayerInfoModal({show, onHide, playerId}) {
     "black",
   ];
 
-  const handleSave = () => {
-    console.log("handle save playerId", typeof playerId, "playerName", playerName, "selectedColor", selectedColor);
+  const usedColors = players
+  ?.filter(
+    (player) =>
+      player.id !== playerId &&
+      player.cubeColor
+  )
+  .map((player) => player.cubeColor) ?? [];
+
+const handleSave = async () => {
+  try {
     updatePlayerInfo(playerId, {
       name: playerName,
       cubeColor: selectedColor,
     });
 
+    const playerDbId =
+      sessionStorage.getItem(
+        "playerDbId"
+      );
+
+    const { error } =
+      await updatePlayer(
+        playerDbId,
+        {
+          name: playerName,
+          cube_color: selectedColor,
+        }
+      );
+
+    if (error) {
+      throw error;
+    }
+
     onHide();
-  };
+  } catch (err) {
+    console.error(
+      "Failed to save player info",
+      err
+    );
+  }
+};
 
   return (
     <AppModal
@@ -56,6 +89,7 @@ function PlayerInfoModal({show, onHide, playerId}) {
                 <SelectionCard
                   selected={selectedColor === color}
                   onClick={() => setSelectedColor(color)}
+                  disabled={usedColors.includes(color)}
                 >
                   <div className={`player-cube player-${color}`}/>
                 </SelectionCard>

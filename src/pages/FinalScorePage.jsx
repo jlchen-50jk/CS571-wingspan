@@ -1,7 +1,9 @@
-import { Container, Form, Row, Col, Button } from "react-bootstrap";
+import { Container, Form, Row, Col, Button, Modal, Spinner } from "react-bootstrap";
 import { useGame } from "../context/GameContext";
 import { useNavigate } from "react-router-dom";
 import { SCORE_CATEGORIES } from "../data/scoreCategories";
+import { useEffect, useState } from "react";
+import { saveScores, loadScores, subscribeToScores, unsubscribe, goToResults, subscribeToGames, loadGame } from "../services/gameService";
 
 function FinalScorePage() {
   let navigate = useNavigate();
@@ -10,13 +12,41 @@ function FinalScorePage() {
     gameSettings,
     gameSession,
     updatePlayerScores,
+    loadGameSettings,
   } = useGame();
 
-  console.log("Game Settings:", gameSettings); //TODO: Remove this debug log after confirming gameSettings is correct
   const currentPlayerId = parseInt(sessionStorage.getItem("playerId"));
-  const currentPlayer = gameSettings.players.find(player => player.id === currentPlayerId);
+  const gameId = sessionStorage.getItem("gameId");
+  const playerDbId = sessionStorage.getItem("playerDbId");
 
-  console.log("Current Player:", currentPlayer); //TODO: Remove this debug log after confirming the current player is correct
+  async function refreshGame() {
+
+  try {
+
+    const {
+      data,
+      error,
+    } = await loadGame(gameId);
+
+    if (error) {
+      throw error;
+    }
+
+    loadGameSettings(data);
+
+  } catch (err) {
+
+    console.error(
+      "Failed to refresh game",
+      err
+    );
+
+  }
+
+}
+  const currentPlayer = gameSettings.players.find(player => player.id === currentPlayerId);
+  const [waitingForPlayers, setWaitingForPlayers] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   const calculateScore = (value) => {
     if (!value) {
@@ -52,20 +82,156 @@ function FinalScorePage() {
     calculateScore(currentPlayer?.scores?.tuckedCards) +
     calculateScore(currentPlayer?.scores?.nectarPoints);
 
-  const handleSubmitScore = () => {
-    navigate("/results");
+  const handleSubmitScore =
+  async () => {
+    try {
+
+        console.log(
+  "Submitting scores",
+  playerDbId,
+  currentPlayer.scores
+);
+
+const result =
+  await saveScores(
+    playerDbId,
+    currentPlayer.scores
+  );
+
+console.log(
+  "saveScores result",
+  result
+);
+
+const { error } = result;
+
+      if (error) {
+        throw error;
+      }
+
+      setWaitingForPlayers(true);
+      setSubmitted(true);
+    } catch (err) {
+      console.error(
+        "Failed to submit scores",
+        err
+      );
+    }
   };
 
-  const updateNectarScore = (habitat, value) => {
-    updatePlayerScores(currentPlayer.id, {
-      ...currentPlayer.scores,
+const updateNectarScore = (habitat, value) => {
+  updatePlayerScores(currentPlayer.id, {
+    ...currentPlayer.scores,
 
-      nectar: {
-        ...currentPlayer.scores.nectar,
-        [habitat]: value,
-      },
-    });
-  };
+    nectar: {
+      ...currentPlayer.scores.nectar,
+      [habitat]: value,
+    },
+  });
+};
+
+  useEffect(() => {
+
+    if (
+      gameSettings.status ===
+      "results"
+    ) {
+      navigate("/results");
+    }
+
+  }, [
+    gameSettings.status,
+    navigate,
+  ]);
+
+  useEffect(() => {
+
+    const channel =
+      subscribeToGames(
+        gameId,
+        refreshGame
+      );
+
+    return () => {
+      unsubscribe(channel);
+    };
+
+  }, [gameId]);
+
+  useEffect(() => {
+    if (!waitingForPlayers) {
+      return;
+    }
+
+    async function checkScores() {
+
+      try {
+
+        const {
+          data,
+          error,
+        } = await loadScores(
+          gameId
+        );
+
+        if (error) {
+          throw error;
+        }
+
+        const submittedPlayers =
+          data.filter(
+            (score) =>
+              score.submitted
+          );
+
+        console.log(
+          "Submitted:",
+          submittedPlayers.length,
+          "Expected:",
+          gameSettings.players.length
+        );
+
+        if (
+          submittedPlayers.length ===
+          gameSettings.players.length
+        ) {
+
+          if (
+            currentPlayerId === 1
+          ) {
+
+            await goToResults(
+              gameId
+            );
+
+          }
+
+        }
+
+      } catch (err) {
+
+        console.error(err);
+
+      }
+
+    }
+
+    checkScores();
+
+    const channel =
+      subscribeToScores(
+        checkScores
+      );
+
+    return () => {
+      unsubscribe(channel);
+    };
+
+  }, [
+    gameId,
+    gameSettings.players.length,
+    currentPlayerId,
+  ]);
 
   return (
     <Container className="py-4">
@@ -127,25 +293,40 @@ function FinalScorePage() {
 
       <hr />
 
-      {/* <Row className="align-items-center mb-4">
-        <Col xs={10}>
-          <h4>Total Score</h4>
-        </Col>
-
-        <Col xs={2}>
-          <h4>{totalScore}</h4>
-        </Col>
-      </Row> */}
-
       <div className="text-center">
         <Button
           className="btn wingspan-btn py-3"
           size="lg"
           onClick={handleSubmitScore}
+          disabled={submitted}
         >
           Submit Score
         </Button>
       </div>
+      <Modal
+        show={waitingForPlayers}
+        backdrop="static"
+        keyboard={false}
+        centered
+      >
+        <Modal.Body className="text-center py-5">
+
+          <Spinner
+            animation="border"
+            className="mb-3"
+          />
+
+          <h4>
+            Waiting For Players
+          </h4>
+
+          <p>
+            Waiting for everyone to
+            submit their scores...
+          </p>
+
+        </Modal.Body>
+      </Modal>
     </Container>
   );
 }

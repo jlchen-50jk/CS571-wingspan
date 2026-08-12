@@ -75,7 +75,7 @@ export const SCORE_CARD_CONFIGS = {
     image: americasScoreCard,
 
     playerColumns: [
-       35, 48, 61, 74, 87,
+       36, 47, 58.5, 70, 81.5,
     ],
 
     scorePositions: [
@@ -91,7 +91,7 @@ export const SCORE_CARD_CONFIGS = {
         { field: "nectar", position: 72 },
         { field: "hummingBirdTrack", position: 80 },
 
-        { field: "total", position: 93 },
+        { field: "total", position: 92 },
     ],
 
   },

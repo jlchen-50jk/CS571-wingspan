@@ -2,12 +2,26 @@ import { Container, Button, Stack, Image, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useGame } from "../context/GameContext";
 import { SCORE_CARD_CONFIGS } from "../data/scoreCardConfig";
+import { useEffect } from "react";
 
 function ResultsPage() {
   const navigate = useNavigate();
+  
+  const { gameSettings, resetGameSettings, hydrateGame } = useGame();
+  useEffect(() => {
+    if (gameSettings.players.length > 0) {
+      return;
+    }
 
-  const { gameSettings, resetGameSettings } = useGame();
-  console.log(gameSettings);
+    const gameId = sessionStorage.getItem("gameId");
+
+    if (!gameId) {
+      return;
+    }
+
+    hydrateGame(gameId);
+
+  }, []);
 
   const renderField = (field, player, rank) => {
     switch (field) {
@@ -18,11 +32,19 @@ function ResultsPage() {
 
       case "nectarPlayed":
         return (
-          <>
-            {player.scores?.nectar?.forest ?? 0}/
-            {player.scores?.nectar?.grassland ?? 0}/
-            {player.scores?.nectar?.wetland ?? 0}
-          </>
+          <div className="nectar-played-row">
+            <span>
+              {player.scores?.nectar?.forest ?? 0}
+            </span>
+
+            <span>
+              {player.scores?.nectar?.grassland ?? 0}
+            </span>
+
+            <span>
+              {player.scores?.nectar?.wetland ?? 0}
+            </span>
+          </div>
         );
 
       case "nectar":
@@ -166,6 +188,7 @@ function ResultsPage() {
     resetGameSettings();
     navigate("/");
   };
+  console.log("Game Settings:", gameSettings);
 
   return (
     <Container fluid className="py-4">
@@ -182,7 +205,22 @@ function ResultsPage() {
               scoreCard.scorePositions.map((scorePosition, posIndex) => (
                 <div
                   key={posIndex}
-                  className={`score-overlay ${scorePosition.field === "playerName" ? "player-name": ""} ${scorePosition.field === "total"? "total-score": ""}`}
+                  className={`score-overlay
+                    ${
+                      scorePosition.field === "playerName"
+                        ? "player-name"
+                        : ""
+                    }
+                    ${
+                      scorePosition.field === "total"
+                        ? "total-score"
+                        : ""
+                    }
+                    ${
+                      scorePosition.field === "nectarPlayed"
+                        ? "nectar-played"
+                        : ""
+                  }`}
                   style={{
                     left: `${scoreCard.playerColumns[index]}%`,
                     top: `${scorePosition.position}%`,

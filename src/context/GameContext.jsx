@@ -1,5 +1,7 @@
 import { createContext, useContext, useState } from "react";
 import { SCORE_CATEGORIES } from "../data/scoreCategories";
+import GOALS from "../data/goals";
+import { loadGame, loadPlayers, loadScores, loadRoundGoals } from "../services/gameService";
 
 const GameContext = createContext();
 
@@ -7,6 +9,7 @@ export function GameProvider({ children }) {
 
   const NEWGAMESTATE = {
     id: null, // Unique identifier for the game session
+    lobbyCode: "",
     playerCount: 3,
     expansions: ["base"], // Default to base expansion
     status: "", // "lobby", "round" + currentRound, "final scoring", "results"
@@ -32,6 +35,17 @@ export function GameProvider({ children }) {
       id: gameId,
     }));
   }
+
+  const setPlayers = (
+  players
+) => {
+  setGameSettings(
+    (prev) => ({
+      ...prev,
+      players,
+    })
+  );
+};
 
   function assignPlayerId() {
     const playerId = gameSettings.players?.length + 1; // Assigns a player ID based on the current number of players
@@ -146,6 +160,198 @@ export function GameProvider({ children }) {
     }));
   };
 
+  const loadGameSettings =
+  (game) => {
+    setGameSettings(
+      (prev) => ({
+        ...prev,
+
+        id: game.id,
+
+        lobbyCode:
+          game.lobby_code,
+
+        playerCount:
+          game.player_count,
+
+        maxPlayers:
+          game.max_players,
+
+        status:
+          game.status,
+
+        currentRound:
+          game.current_round,
+
+        expansions:
+          game.expansions,
+      })
+    );
+  };
+
+  const hydrateGame =
+  async (gameId) => {
+
+    const {
+      data: game,
+      error: gameError,
+    } = await loadGame(gameId);
+
+    if (gameError) {
+      throw gameError;
+    }
+
+    const {
+      data: players,
+      error: playerError,
+    } = await loadPlayers(gameId);
+
+    if (playerError) {
+      throw playerError;
+    }
+
+    const {
+      data: scores,
+      error: scoreError,
+    } = await loadScores(gameId);
+
+    if (scoreError) {
+      throw scoreError;
+    }
+
+    const {
+      data: roundGoals,
+      error: roundGoalError,
+    } = await loadRoundGoals(
+      gameId
+    );
+
+    if (roundGoalError) {
+      throw roundGoalError;
+    }
+
+    const goalMap = {};
+
+    roundGoals.forEach((goal) => {
+
+      goalMap[
+        goal.round_number
+      ] = goal.goal_id;
+
+    });
+
+    roundGoals.forEach((goal) => {
+
+      goalMap[
+        goal.round_number
+      ] =
+        GOALS.find(
+          (g) =>
+            g.id === goal.goal_id
+        ) ?? null;
+
+    });
+
+    const scoreMap = {};
+
+    scores.forEach((score) => {
+
+      scoreMap[
+        score.players.seat_number
+      ] = {
+
+        birdPoints:
+          score.bird_points,
+
+        bonusCards:
+          score.bonus_cards,
+
+        roundGoals:
+          score.round_goals,
+
+        eggs:
+          score.eggs,
+
+        cachedFood:
+          score.cached_food,
+
+        tuckedCards:
+          score.tucked_cards,
+
+        nectar: {
+          forest:
+            score.nectar_forest,
+
+          grassland:
+            score.nectar_grassland,
+
+          wetland:
+            score.nectar_wetland,
+        },
+
+      };
+
+    });
+
+    setGameSettings({
+
+      id: game.id,
+
+      lobbyCode:
+        game.lobby_code,
+
+      playerCount:
+        game.player_count,
+
+      maxPlayers:
+        game.max_players,
+
+      status:
+        game.status,
+
+      currentRound:
+        game.current_round,
+
+      expansions:
+        game.expansions,
+
+      goals: {
+        1: goalMap[1] ?? null,
+        2: goalMap[2] ?? null,
+        3: goalMap[3] ?? null,
+        4: goalMap[4] ?? null,
+      },
+
+      players: players.map(
+        (player) => ({
+
+          id:
+            player.seat_number,
+
+          dbId:
+            player.id,
+
+          name:
+            player.name,
+
+          cubeColor:
+            player.cube_color,
+
+          isHost:
+            player.is_host,
+
+          scores:
+            scoreMap[
+              player.seat_number
+            ] ?? {},
+
+        })
+      ),
+
+    });
+
+  };
+
   return (
     <GameContext.Provider
       value={{
@@ -160,11 +366,14 @@ export function GameProvider({ children }) {
 
         resetGameSettings,
 
+        setPlayers,
         addPlayer,
         updatePlayerInfo,
         advanceRound,
         updateRound,
         updatePlayerScores,
+        loadGameSettings,
+        hydrateGame,
       }}
     >
       {children}
